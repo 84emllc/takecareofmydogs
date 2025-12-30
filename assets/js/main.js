@@ -202,6 +202,119 @@
         }
     }
 
+    // Get today's date as ISO string (YYYY-MM-DD) in local timezone
+    function getTodayDateString() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        return year + '-' + month + '-' + day;
+    }
+
+    // Load checkbox states from localStorage
+    function loadCheckboxStates() {
+        try {
+            const stored = localStorage.getItem('feedingChecks');
+            if (!stored) return {};
+
+            const data = JSON.parse(stored);
+            const today = getTodayDateString();
+
+            // If stored date doesn't match today, clear checkboxes
+            if (data.date !== today) {
+                localStorage.removeItem('feedingChecks');
+                return {};
+            }
+
+            return data.items || {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    // Save checkbox state to localStorage
+    function saveCheckboxState(itemId, checked) {
+        try {
+            const stored = localStorage.getItem('feedingChecks');
+            let data = stored ? JSON.parse(stored) : { date: getTodayDateString(), items: {} };
+
+            // Ensure date is current
+            data.date = getTodayDateString();
+            data.items[itemId] = checked;
+
+            localStorage.setItem('feedingChecks', JSON.stringify(data));
+        } catch (e) {
+            // localStorage unavailable, checkboxes still work but don't persist
+        }
+    }
+
+    // Check if date has changed and clear checkboxes if needed
+    function checkDateChange() {
+        try {
+            const stored = localStorage.getItem('feedingChecks');
+            if (!stored) return;
+
+            const data = JSON.parse(stored);
+            const today = getTodayDateString();
+
+            if (data.date !== today) {
+                // Clear all checkboxes
+                const checkboxes = document.querySelectorAll('.item-checkbox input[type="checkbox"]');
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.checked = false;
+                    var feedingItem = checkbox.closest('.feeding-item');
+                    if (feedingItem) {
+                        feedingItem.classList.remove('completed');
+                    }
+                });
+                localStorage.removeItem('feedingChecks');
+            }
+        } catch (e) {
+            // Ignore errors
+        }
+    }
+
+    // Initialize checkboxes with localStorage persistence
+    function initCheckboxes() {
+        const checkboxes = document.querySelectorAll('.item-checkbox input[type="checkbox"]');
+        if (checkboxes.length === 0) return;
+
+        // Load saved states
+        const savedStates = loadCheckboxStates();
+
+        checkboxes.forEach(function(checkbox) {
+            const itemId = checkbox.getAttribute('data-item-id');
+            if (!itemId) return;
+
+            // Restore saved state
+            if (savedStates[itemId]) {
+                checkbox.checked = true;
+                var feedingItem = checkbox.closest('.feeding-item');
+                if (feedingItem) {
+                    feedingItem.classList.add('completed');
+                }
+            }
+
+            // Add change listener
+            checkbox.addEventListener('change', function() {
+                var feedingItem = this.closest('.feeding-item');
+                if (feedingItem) {
+                    if (this.checked) {
+                        feedingItem.classList.add('completed');
+                    } else {
+                        feedingItem.classList.remove('completed');
+                    }
+                }
+                saveCheckboxState(itemId, this.checked);
+
+                // Haptic feedback on mobile
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(30);
+                }
+            });
+        });
+    }
+
     // Initialize all features when DOM is ready
     function init() {
         initTabs();
@@ -210,9 +323,14 @@
         initKeyboardNav();
         initLazyImages();
         highlightCurrentMealTime();
+        initCheckboxes();
+        registerServiceWorker();
 
-        // Check meal times every minute
-        setInterval(highlightCurrentMealTime, 60000);
+        // Check meal times and date change every minute
+        setInterval(function() {
+            highlightCurrentMealTime();
+            checkDateChange();
+        }, 60000);
     }
 
     // Run initialization

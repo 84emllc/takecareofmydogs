@@ -32,6 +32,12 @@ const paths = {
     html: {
         src: '*.html',
         dest: 'dist/'
+    },
+    pwa: {
+        sw: 'sw.js',
+        manifest: 'manifest.json',
+        icons: 'assets/icons/**/*.png',
+        iconsDest: 'dist/icons/'
     }
 };
 
@@ -72,12 +78,31 @@ function images() {
         .pipe(gulp.dest(paths.images.dest));
 }
 
+// Copy service worker to dist root
+function serviceWorker() {
+    return gulp.src(paths.pwa.sw)
+        .pipe(gulp.dest('dist/'));
+}
+
+// Copy manifest to dist root
+function manifest() {
+    return gulp.src(paths.pwa.manifest)
+        .pipe(gulp.dest('dist/'));
+}
+
+// Copy PWA icons
+function pwaIcons() {
+    return gulp.src(paths.pwa.icons, { encoding: false })
+        .pipe(gulp.dest(paths.pwa.iconsDest));
+}
+
 // Process HTML files
 function html() {
     return gulp.src(paths.html.src)
         .pipe(replace('assets/css/styles.css', 'css/styles.min.css'))
         .pipe(replace('assets/js/main.js', 'js/main.min.js'))
         .pipe(replace('assets/images/', 'images/'))
+        .pipe(replace('assets/icons/', 'icons/'))
         .pipe(htmlmin({
             collapseWhitespace: true,
             removeComments: true,
@@ -102,10 +127,13 @@ function watch() {
     gulp.watch(paths.scripts.src, scripts);
     gulp.watch(paths.images.src, images);
     gulp.watch(paths.html.src, html);
+    gulp.watch(paths.pwa.sw, serviceWorker);
+    gulp.watch(paths.pwa.manifest, manifest);
+    gulp.watch(paths.pwa.icons, pwaIcons);
 }
 
 // Define complex tasks
-const build = gulp.series(clean, gulp.parallel(styles, scripts, images, html));
+const build = gulp.series(clean, gulp.parallel(styles, scripts, images, html, serviceWorker, manifest, pwaIcons));
 const dev = gulp.series(build, watch);
 
 // Export tasks
@@ -114,6 +142,9 @@ exports.styles = styles;
 exports.scripts = scripts;
 exports.images = images;
 exports.html = html;
+exports.serviceWorker = serviceWorker;
+exports.manifest = manifest;
+exports.pwaIcons = pwaIcons;
 exports.watch = watch;
 exports.build = build;
 exports.default = dev;
