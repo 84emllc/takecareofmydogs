@@ -278,6 +278,23 @@
         });
     }
 
+    // Update reset button visibility based on checkbox state
+    function updateResetButtonVisibility() {
+        var resetBtn = document.getElementById('reset-checkboxes');
+        if (!resetBtn) return;
+
+        var checkboxes = document.querySelectorAll('.item-checkbox input[type="checkbox"]');
+        var anyChecked = Array.prototype.some.call(checkboxes, function(cb) {
+            return cb.checked;
+        });
+
+        if (anyChecked) {
+            resetBtn.classList.add('visible');
+        } else {
+            resetBtn.classList.remove('visible');
+        }
+    }
+
     // Initialize reset button
     function initResetButton() {
         var resetBtn = document.getElementById('reset-checkboxes');
@@ -286,6 +303,7 @@
         resetBtn.addEventListener('click', function() {
             localStorage.removeItem('feedingChecks');
             resetAllCheckboxesUI();
+            updateResetButtonVisibility();
         });
     }
 
@@ -321,6 +339,7 @@
                     }
                 }
                 saveCheckboxState(itemId, this.checked);
+                updateResetButtonVisibility();
 
                 // Haptic feedback on mobile
                 if ('vibrate' in navigator) {
@@ -328,6 +347,9 @@
                 }
             });
         });
+
+        // Update reset button visibility based on restored state
+        updateResetButtonVisibility();
     }
 
     // Initialize all features when DOM is ready
