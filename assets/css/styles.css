@@ -76,6 +76,29 @@ body {
     font-size: 1rem;
 }
 
+/* Reset Button */
+.reset-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1.5rem;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.reset-btn:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.reset-btn:active {
+    transform: scale(0.98);
+}
+
 /* Feeding Schedule Section */
 .schedule-section {
     padding: 0 1rem;
