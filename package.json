@@ -1,6 +1,6 @@
 {
   "name": "takecareofmydogs",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Daily feeding schedule and care instructions for dogs",
   "main": "index.js",
   "scripts": {
