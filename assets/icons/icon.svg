@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Dog Head Icon -->
+  <!-- White dog on black background -->
+
+  <!-- Black background -->
+  <rect width="512" height="512" fill="#000000"/>
+
+  <!-- Left floppy ear -->
+  <ellipse cx="120" cy="240" rx="55" ry="100" fill="#ffffff"/>
+
+  <!-- Right floppy ear -->
+  <ellipse cx="392" cy="240" rx="55" ry="100" fill="#ffffff"/>
+
+  <!-- Main head (oval shape) -->
+  <ellipse cx="256" cy="200" rx="120" ry="130" fill="#ffffff"/>
+
+  <!-- Snout/muzzle -->
+  <ellipse cx="256" cy="320" rx="70" ry="55" fill="#ffffff"/>
+
+  <!-- Left eye -->
+  <ellipse cx="210" cy="180" rx="18" ry="22" fill="#000000"/>
+
+  <!-- Right eye -->
+  <ellipse cx="302" cy="180" rx="18" ry="22" fill="#000000"/>
+
+  <!-- Nose -->
+  <ellipse cx="256" cy="300" rx="28" ry="22" fill="#000000"/>
+
+  <!-- Tongue -->
+  <ellipse cx="256" cy="370" rx="22" ry="30" fill="#ff6b6b"/>
+</svg>
