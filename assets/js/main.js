@@ -258,20 +258,53 @@
             const today = getTodayDateString();
 
             if (data.date !== today) {
-                // Clear all checkboxes
-                const checkboxes = document.querySelectorAll('.item-checkbox input[type="checkbox"]');
-                checkboxes.forEach(function(checkbox) {
-                    checkbox.checked = false;
-                    var feedingItem = checkbox.closest('.feeding-item');
-                    if (feedingItem) {
-                        feedingItem.classList.remove('completed');
-                    }
-                });
                 localStorage.removeItem('feedingChecks');
+                resetAllCheckboxesUI();
             }
         } catch (e) {
             // Ignore errors
         }
+    }
+
+    // Reset all checkboxes UI without affecting other state
+    function resetAllCheckboxesUI() {
+        const checkboxes = document.querySelectorAll('.item-checkbox input[type="checkbox"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = false;
+            var feedingItem = checkbox.closest('.feeding-item');
+            if (feedingItem) {
+                feedingItem.classList.remove('completed');
+            }
+        });
+    }
+
+    // Update reset button visibility based on checkbox state
+    function updateResetButtonVisibility() {
+        var resetBtn = document.getElementById('reset-checkboxes');
+        if (!resetBtn) return;
+
+        var checkboxes = document.querySelectorAll('.item-checkbox input[type="checkbox"]');
+        var anyChecked = Array.prototype.some.call(checkboxes, function(cb) {
+            return cb.checked;
+        });
+
+        if (anyChecked) {
+            resetBtn.classList.add('visible');
+        } else {
+            resetBtn.classList.remove('visible');
+        }
+    }
+
+    // Initialize reset button
+    function initResetButton() {
+        var resetBtn = document.getElementById('reset-checkboxes');
+        if (!resetBtn) return;
+
+        resetBtn.addEventListener('click', function() {
+            localStorage.removeItem('feedingChecks');
+            resetAllCheckboxesUI();
+            updateResetButtonVisibility();
+        });
     }
 
     // Initialize checkboxes with localStorage persistence
@@ -306,6 +339,7 @@
                     }
                 }
                 saveCheckboxState(itemId, this.checked);
+                updateResetButtonVisibility();
 
                 // Haptic feedback on mobile
                 if ('vibrate' in navigator) {
@@ -313,6 +347,9 @@
                 }
             });
         });
+
+        // Update reset button visibility based on restored state
+        updateResetButtonVisibility();
     }
 
     // Initialize all features when DOM is ready
@@ -324,6 +361,7 @@
         initLazyImages();
         highlightCurrentMealTime();
         initCheckboxes();
+        initResetButton();
         registerServiceWorker();
 
         // Check meal times and date change every minute
