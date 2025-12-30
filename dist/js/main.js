@@ -210,6 +210,7 @@
         initKeyboardNav();
         initLazyImages();
         highlightCurrentMealTime();
+        registerServiceWorker();
 
         // Check meal times every minute
         setInterval(highlightCurrentMealTime, 60000);
