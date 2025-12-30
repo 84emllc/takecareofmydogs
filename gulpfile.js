@@ -103,6 +103,7 @@ function html() {
     return gulp.src(paths.html.src)
         .pipe(replace('assets/css/styles.css', `css/styles.min.css?v=${version}`))
         .pipe(replace('assets/js/main.js', `js/main.min.js?v=${version}`))
+        .pipe(replace('href="manifest.json"', `href="manifest.json?v=${version}"`))
         .pipe(replace('assets/images/', 'images/'))
         .pipe(replace('assets/icons/', 'icons/'))
         .pipe(htmlmin({
