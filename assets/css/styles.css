@@ -264,6 +264,76 @@ body {
     color: var(--text-muted);
 }
 
+/* Checkbox Styles */
+.item-checkbox {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.item-checkbox input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.item-checkbox .checkmark {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    background: var(--card-bg);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-checkbox .checkmark::after {
+    content: '';
+    display: none;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+    margin-bottom: 2px;
+}
+
+.item-checkbox input:checked + .checkmark {
+    background: var(--success);
+    border-color: var(--success);
+}
+
+.item-checkbox input:checked + .checkmark::after {
+    display: block;
+}
+
+.item-checkbox input:focus + .checkmark {
+    outline: 3px solid var(--primary-light);
+    outline-offset: 2px;
+}
+
+.item-checkbox:hover .checkmark {
+    border-color: var(--primary-light);
+}
+
+.feeding-item.completed {
+    opacity: 0.6;
+}
+
+.feeding-item.completed .item-name {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
 /* Supplements Section */
 .supplements-section {
     padding: 0 1rem 2rem;
