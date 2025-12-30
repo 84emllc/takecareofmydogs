@@ -14,6 +14,7 @@ const browserSync = require('browser-sync').create();
 const del = require('del');
 const htmlmin = require('gulp-htmlmin');
 const replace = require('gulp-replace');
+const pkg = require('./package.json');
 
 // File paths
 const paths = {
@@ -98,9 +99,10 @@ function pwaIcons() {
 
 // Process HTML files
 function html() {
+    const version = pkg.version;
     return gulp.src(paths.html.src)
-        .pipe(replace('assets/css/styles.css', 'css/styles.min.css'))
-        .pipe(replace('assets/js/main.js', 'js/main.min.js'))
+        .pipe(replace('assets/css/styles.css', `css/styles.min.css?v=${version}`))
+        .pipe(replace('assets/js/main.js', `js/main.min.js?v=${version}`))
         .pipe(replace('assets/images/', 'images/'))
         .pipe(replace('assets/icons/', 'icons/'))
         .pipe(htmlmin({
