@@ -310,12 +310,18 @@
     function saveCheckboxState(itemId, checked) {
         try {
             const stored = localStorage.getItem('feedingChecks');
-            let data = stored ? JSON.parse(stored) : { date: getTodayDateString(), items: {} };
+            const today = getTodayDateString();
+            let data;
 
-            // Ensure date is current
-            data.date = getTodayDateString();
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                // If stored date doesn't match today, start fresh (don't preserve old items)
+                data = (parsed.date === today) ? parsed : { date: today, items: {} };
+            } else {
+                data = { date: today, items: {} };
+            }
+
             data.items[itemId] = checked;
-
             localStorage.setItem('feedingChecks', JSON.stringify(data));
         } catch (e) {
             // localStorage unavailable, checkboxes still work but don't persist
@@ -444,6 +450,13 @@
             highlightCurrentMealTime();
             checkDateChange();
         }, 60000);
+
+        // Check date change when app returns to foreground (critical for PWA)
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                checkDateChange();
+            }
+        });
     }
 
     // Run initialization
