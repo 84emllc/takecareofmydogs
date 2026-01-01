@@ -3,7 +3,7 @@
  * Cache-first strategy for offline functionality
  */
 
-const CACHE_NAME = 'takecareofmydogs-v1.4.0';
+const CACHE_NAME = 'takecareofmydogs-v1.4.2';
 
 const ASSETS_TO_CACHE = [
     '/',

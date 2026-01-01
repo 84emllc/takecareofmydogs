@@ -38,11 +38,13 @@ A Progressive Web App (PWA) for tracking daily dog feeding schedules, medication
 ### Never Edit dist/
 The dist/ directory is generated. Always edit source files in the project root and assets/ directory.
 
-### Service Worker Versioning
-When changing cached assets, update `CACHE_NAME` in sw.js:
-```javascript
-const CACHE_NAME = 'takecareofmydogs-v1.2.0';
-```
+### Version Bumping (MANDATORY for any release)
+All versions MUST stay in sync. Update these files together:
+1. `package.json` - `"version": "x.x.x"`
+2. `sw.js` - `CACHE_NAME = 'takecareofmydogs-vX.X.X'`
+3. Run `npm run build` to regenerate dist/
+
+**Never commit without running the build.** The PWA will serve stale cached content if `CACHE_NAME` doesn't match the deployed version.
 
 ### Adding New Images
 1. Add image to assets/images/
@@ -110,10 +112,9 @@ Edit assets/js/main.js. Build will minify with terser.
 3. Check Chrome DevTools > Application > Manifest and Service Workers
 
 ### Deployment
-1. Bump version if needed (package.json, sw.js CACHE_NAME)
-2. Run `npm run build`
-3. Commit and push to main branch
-4. Kinsta auto-deploys from Git
+1. Follow "Version Bumping" checklist above (MANDATORY)
+2. Commit and push to main branch
+3. Kinsta auto-deploys from Git
 
 ## Accessibility Requirements
 
